@@ -1,0 +1,8 @@
+<resources>
+    <string name="ch_alerts">Alerts</string>
+    <string name="ch_status">Pump status</string>
+    <string name="offline">Offline</string>
+    <string name="comp_on">Compressor running</string>
+    <string name="comp_off">Compressor idle</string>
+    <string name="outdoor">Outdoor</string>
+</resources>

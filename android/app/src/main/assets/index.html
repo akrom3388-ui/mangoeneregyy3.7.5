@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="uz" data-theme="auto" data-accent="mango">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mango Monitor</title>
+<style>
+:root{--bg:#0e1621;--card:#17212f;--card2:#1e2b3d;--tx:#e8eef6;--mut:#8a9bb0;--line:#2a3a50;--ok:#3ecf8e;--warn:#ffb020;--bad:#ff5d5d;--acc:#ff9f1c;--acc2:#ffd166;--on-acc:#1b1200;--c1:var(--acc);--c2:#4cc9f0;--c3:#9b8cff;color-scheme:dark}
+html[data-theme=light]{--bg:#f3f5f9;--card:#fff;--card2:#eef2f8;--tx:#16202e;--mut:#5c6b80;--line:#d9e0ea;--c2:#0b84c6;--c3:#6b57e0;color-scheme:light}
+@media(prefers-color-scheme:light){html[data-theme=auto]{--bg:#f3f5f9;--card:#fff;--card2:#eef2f8;--tx:#16202e;--mut:#5c6b80;--line:#d9e0ea;--c2:#0b84c6;--c3:#6b57e0;color-scheme:light}}
+html[data-accent=sea]{--acc:#19b5c9;--acc2:#7ee8f2}html[data-accent=green]{--acc:#38c172;--acc2:#8df0b4}html[data-accent=violet]{--acc:#8b7bff;--acc2:#c3baff;--on-acc:#fff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-apple-system,Roboto,sans-serif}
+body{display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0)}
+#top{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line)}
+#top .logo{width:28px;height:28px}#top h1{font-size:17px;margin:0;flex:1}#ver{font-size:12px;color:var(--mut);white-space:nowrap;border:1px solid var(--line);border-radius:8px;padding:3px 7px}
+#main{flex:1;overflow:auto;padding:12px 12px 18px}
+#tabs{display:flex;border-top:1px solid var(--line);background:var(--card);padding-bottom:env(safe-area-inset-bottom,0)}
+#tabs button{flex:1;background:none;border:0;color:var(--mut);padding:8px 2px 7px;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px}
+#tabs button.on{color:var(--acc)}#tabs svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.card{background:var(--card);border-radius:14px;padding:12px;margin-bottom:10px}
+.card h3{margin:0 0 8px;font-size:13px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.sp{flex:1}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.m{background:var(--card2);border-radius:10px;padding:8px 10px}.m b{display:block;font-size:20px}.m small{color:var(--mut);font-size:11px}
+.big{font-size:44px;font-weight:700;line-height:1}.mut{color:var(--mut)}.sm{font-size:12px}
+.chip{display:inline-block;padding:3px 9px;border-radius:99px;background:var(--card2);color:var(--mut);font-size:12px}
+.chip.on{background:var(--acc);color:var(--on-acc)}.chip.ok{background:rgba(62,207,142,.18);color:var(--ok)}.chip.bad{background:rgba(255,93,93,.18);color:var(--bad)}.chip.warn{background:rgba(255,176,32,.2);color:var(--warn)}
+button.btn{background:var(--acc);color:var(--on-acc);border:0;border-radius:10px;padding:11px 16px;font-size:15px;font-weight:600}
+button.btn.sec{background:var(--card2);color:var(--tx)}button.btn.bad{background:var(--bad);color:#fff}button.btn.sm{padding:6px 10px;font-size:13px}button.btn:disabled{opacity:.45}
+input,select{background:var(--card2);color:var(--tx);border:1px solid var(--line);border-radius:10px;padding:10px;font-size:15px;width:100%}
+input[type=checkbox]{width:auto}label.f{display:block;margin:8px 0 3px;font-size:12px;color:var(--mut)}
+.seg{display:flex;background:var(--card2);border-radius:10px;padding:3px;margin-bottom:10px}.seg button{flex:1;background:none;border:0;color:var(--mut);padding:7px;border-radius:8px;font-size:13px}.seg button.on{background:var(--acc);color:var(--on-acc);font-weight:600}
+.sw{position:relative;width:46px;height:26px;flex:none}.sw input{opacity:0;position:absolute;inset:0;width:100%;height:100%;margin:0}.sw i{position:absolute;inset:0;background:var(--line);border-radius:99px;transition:.2s}.sw i:after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}.sw input:checked+i{background:var(--acc)}.sw input:checked+i:after{left:23px}
+.pwr{width:130px;height:130px;border-radius:50%;border:6px solid var(--line);background:var(--card2);color:var(--mut);display:flex;align-items:center;justify-content:center;margin:6px auto;font-size:15px;font-weight:700}.pwr.on{border-color:var(--acc);color:var(--acc)}
+.dots{display:flex;gap:6px;justify-content:center;margin:10px 0}.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}.dots i.on{background:var(--acc)}
+svg.ch text{fill:var(--mut);font-size:10px}.ch .gl{stroke:var(--line);stroke-width:1}
+.dev-chips{display:flex;gap:6px;overflow:auto;margin-bottom:10px}.dev-chips .chip{white-space:nowrap;padding:6px 12px;font-size:13px}
+#sheet{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;z-index:20}#sheet.on{display:flex}
+#sheet>div{background:var(--bg);width:100%;max-height:85%;overflow:auto;border-radius:18px 18px 0 0;padding:14px;padding-bottom:calc(14px + env(safe-area-inset-bottom,0))}
+#toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:9px 16px;border-radius:99px;font-size:13px;display:none;z-index:40;max-width:86%}
+#lock,#splash{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:50}
+#splash{display:flex;z-index:60;transition:opacity .4s}#splash svg{width:96px;height:96px}#splash h2{margin:0;letter-spacing:.04em}
+.wiz{max-width:440px;margin:0 auto;padding-top:14px}.wiz h2{margin:6px 0 4px}.err{color:var(--bad);font-size:13px;min-height:18px;margin:6px 0}
+.badge{background:var(--bad);color:#fff;border-radius:99px;font-size:10px;padding:1px 6px;margin-left:-8px;vertical-align:top}
+table.kv{width:100%;border-collapse:collapse;font-size:13px}table.kv td{padding:5px 2px;border-bottom:1px solid var(--line)}table.kv td:last-child{text-align:right;font-family:monospace}
+.dt td{text-align:right;font-family:inherit;padding:5px 3px}.dt td:first-child{text-align:left}.chrd{min-height:18px;margin-top:2px}
+#upd{position:fixed;inset:0;z-index:9999;background:var(--bg);display:none;align-items:center;justify-content:center;padding:20px;overflow:auto}#upd.on{display:flex}#upd .btn{width:100%;margin-top:10px}.bar{height:8px;background:var(--card2);border-radius:6px;overflow:hidden;margin:10px 0 6px}.bar i{display:block;height:100%;width:0;background:var(--acc);transition:width .2s}
+.zb{gap:6px;margin-top:4px}.zb button{padding:5px 12px;font-size:14px}details>summary{cursor:pointer;list-style:revert}
+.slot{background:var(--card2);border-radius:10px;padding:8px;margin-bottom:8px}.days{display:flex;gap:4px;margin-bottom:6px}.days .chip{flex:1;text-align:center;padding:5px 0}
+</style>
+</head>
+<body>
+<div id="splash"><svg viewBox="0 0 96 96"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd166"/><stop offset="1" stop-color="#ff7a00"/></linearGradient></defs><path d="M48 14c20 0 34 15 34 33 0 20-15 35-34 35S14 67 14 47c0-18 14-33 34-33z" fill="url(#g)"/><path d="M48 24c5 8 12 13 12 22a12 12 0 0 1-24 0c0-5 3-8 5-11 1 3 3 5 5 5 0-6 0-11 2-16z" fill="#fff" opacity=".92"/><path d="M52 14c1-6 6-10 13-10-1 6-5 10-13 10z" fill="#38c172"/></svg><h2>MANGO MONITOR</h2></div>
+<div id="lock"><svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><button class="btn" onclick="unlock()" id="lockbtn"></button></div>
+<div id="top"><svg class="logo" viewBox="0 0 96 96"><path d="M48 14c20 0 34 15 34 33 0 20-15 35-34 35S14 67 14 47c0-18 14-33 34-33z" fill="var(--acc)"/><path d="M48 24c5 8 12 13 12 22a12 12 0 0 1-24 0c0-5 3-8 5-11 1 3 3 5 5 5 0-6 0-11 2-16z" fill="#fff"/></svg><h1 id="title">Mango Monitor</h1><span id="ver" title="APK"></span><button class="btn sec sm" id="bell" onclick="openAlerts()">🔔<span id="bellN"></span></button></div>
+<div id="main"></div>
+<div id="tabs"></div>
+<div id="upd"></div>
+<div id="sheet" onclick="if(event.target===this)closeSheet()"><div id="sheetc"></div></div>
+<div id="toast"></div>
+<script src="i18n.js"></script>
+<script src="qrcode.js"></script>
+<script src="core.js"></script>
+<script src="local.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

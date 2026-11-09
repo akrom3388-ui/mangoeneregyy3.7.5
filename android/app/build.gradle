@@ -1,0 +1,75 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+def ksProps = new Properties()
+def ksFile = rootProject.file('keystore.properties')
+if (ksFile.exists()) { ksFile.withInputStream { ksProps.load(it) } }
+// CI: environment variables take priority
+def ksPath = System.getenv('KEYSTORE_FILE') ?: ksProps['storeFile']
+def hasRelease = ksPath != null && file(ksPath).exists()
+
+// Telegram update channel: compiled into the APK (the app has no screen to change it). Priority: CI env -> update-channel.properties
+def updProps = new Properties()
+def updFile = file('update-channel.properties')
+if (updFile.exists()) { updFile.withInputStream { updProps.load(it) } }
+def tgToken = (System.getenv('TG_BOT_TOKEN') ?: updProps.getProperty('TG_BOT_TOKEN') ?: '').trim()
+def tgChat = (System.getenv('TG_CHAT_ID') ?: updProps.getProperty('TG_CHAT_ID') ?: '-1004453258954').trim()
+
+android {
+    namespace 'uz.mango.monitor'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'uz.mango.monitor'
+        minSdk 24
+        targetSdk 34
+        versionCode 15
+        versionName '3.7.5'
+        buildConfigField 'String', 'TG_BOT_TOKEN', "\"${tgToken}\""
+        buildConfigField 'String', 'TG_CHAT_ID', "\"${tgChat}\""
+        buildConfigField 'String', 'SERVER_URL', "\"${project.findProperty('SERVER_URL') ?: 'https://api.example.uz'}\""
+    }
+
+    signingConfigs {
+        // Fixed key (kept in the repository): every build is signed with it, so a new APK installs OVER the old one (in-app update).
+        mango {
+            storeFile file('mango-update.jks')
+            storePassword 'Uj3Zhvi3KYo67zlr4WHD'
+            keyAlias 'mango'
+            keyPassword 'Uj3Zhvi3KYo67zlr4WHD'
+        }
+        if (hasRelease) {
+            release {
+                storeFile file(ksPath)
+                storePassword System.getenv('KEYSTORE_PASSWORD') ?: ksProps['storePassword']
+                keyAlias System.getenv('KEY_ALIAS') ?: ksProps['keyAlias']
+                keyPassword System.getenv('KEY_PASSWORD') ?: ksProps['keyPassword']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig hasRelease ? signingConfigs.release : signingConfigs.mango
+        }
+        debug { applicationIdSuffix '.debug'; versionNameSuffix '-debug'; signingConfig signingConfigs.mango }
+    }
+
+    buildFeatures { buildConfig true }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+    kotlinOptions { jvmTarget = '17' }
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.fragment:fragment-ktx:1.6.2'
+    implementation 'androidx.biometric:biometric:1.1.0'
+    implementation 'androidx.security:security-crypto:1.1.0-alpha06'
+    implementation 'androidx.work:work-runtime:2.9.0'
+}

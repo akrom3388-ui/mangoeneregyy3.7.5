@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Mango Monitor</string>
+    <string name="ch_alerts">Ogohlantirishlar</string>
+    <string name="ch_status">Nasos holati</string>
+    <string name="offline">Oflayn</string>
+    <string name="comp_on">Kompressor ishlayapti</string>
+    <string name="comp_off">Kompressor to\'xtagan</string>
+    <string name="outdoor">Tashqi</string>
+</resources>

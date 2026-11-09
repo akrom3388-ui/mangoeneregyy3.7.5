@@ -1,0 +1,8 @@
+<resources>
+    <string name="ch_alerts">Оповещения</string>
+    <string name="ch_status">Состояние насоса</string>
+    <string name="offline">Офлайн</string>
+    <string name="comp_on">Компрессор работает</string>
+    <string name="comp_off">Компрессор стоит</string>
+    <string name="outdoor">Улица</string>
+</resources>

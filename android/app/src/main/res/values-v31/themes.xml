@@ -1,0 +1,9 @@
+<resources>
+    <style name="Theme.Mango" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/mm_bg</item>
+        <item name="android:statusBarColor">@color/mm_bg</item>
+        <item name="android:navigationBarColor">@color/mm_card</item>
+        <item name="android:windowSplashScreenBackground">@color/mm_bg</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_logo</item>
+    </style>
+</resources>

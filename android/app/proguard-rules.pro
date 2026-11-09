@@ -1,0 +1,3 @@
+-keepclassmembers class uz.mango.monitor.MainActivity$Bridge { @android.webkit.JavascriptInterface <methods>; }
+-keepattributes JavascriptInterface
+-keep class uz.mango.monitor.** { *; }
