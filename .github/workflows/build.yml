@@ -1,0 +1,47 @@
+name: Android build
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+defaults:
+  run:
+    working-directory: android
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17' }
+      - uses: gradle/actions/setup-gradle@v3
+        with: { gradle-version: '8.7' }
+      - name: Debug APK (signed with the fixed key android/app/mango-update.jks)
+        env:
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ vars.TG_CHAT_ID }}
+        run: gradle assembleDebug -PSERVER_URL="${{ vars.SERVER_URL || 'https://api.example.uz' }}"
+      - name: Name the APK with its version
+        run: |
+          V=$(grep -oP "versionName '\K[0-9.]+" app/build.gradle)
+          mkdir -p ../dist && cp app/build/outputs/apk/debug/app-debug.apk "../dist/MangoMonitor-$V.apk"
+          echo "APK: MangoMonitor-$V.apk"
+      - name: Signed release APK + AAB (only if KEYSTORE_B64 secret exists)
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_B64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/release.jks"
+            export KEYSTORE_FILE="$RUNNER_TEMP/release.jks"
+            gradle assembleRelease bundleRelease -PSERVER_URL="${{ vars.SERVER_URL || 'https://api.example.uz' }}"
+          else
+            echo "No keystore secret: skipping signed release build"
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MangoMonitor
+          path: |
+            dist/*.apk
+            android/app/build/outputs/bundle/**/*.aab
